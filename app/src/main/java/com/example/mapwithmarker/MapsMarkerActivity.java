@@ -2,7 +2,6 @@ package com.example.mapwithmarker;
 
 import android.content.IntentSender;
 import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +15,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -44,7 +44,7 @@ public class MapsMarkerActivity extends AppCompatActivity
 
 
     String[] resultstr;
-    String[] res;
+    String[] res = new String[100];
     LatLng myposition;
 
 
@@ -148,19 +148,21 @@ public class MapsMarkerActivity extends AppCompatActivity
 
 
     @Override
+    @SuppressWarnings({"MissingPermission"})
     public void onConnected(Bundle bundle) {
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                if (location == null) {
+                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
-        } else {
-            //If everything went fine lets get latitude and longitude
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-            myposition = new LatLng(currentLatitude,currentLongitude);
-            Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
-        }
+                } else {
+                    //If everything went fine lets get latitude and longitude
+                    currentLatitude = location.getLatitude();
+                    currentLongitude = location.getLongitude();
+                    myposition = new LatLng(currentLatitude, currentLongitude);
+                    Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+                }
+
     }
 
 
@@ -223,19 +225,19 @@ public class MapsMarkerActivity extends AppCompatActivity
         // Add a marker in Sydney, Australia,
         // and move the map's camera to the same location.
         //LatLng sydney = new LatLng(-33.852, 151.211);
-        ArrayList<LatLng> pla = new ArrayList<LatLng>();
-        for(int i=0;i<res.length;++i){
-            pla.add(new LatLng(Double.parseDouble(res[i].split("%")[0]), Double.parseDouble(res[i].split("%")[1])));
-        }
-//        pla.add(new LatLng(-33.852, 151.211));
-//        pla.add(new LatLng(-32.765, 150.111));
-            int x = 0;
-        for(LatLng l:pla) {
-            googleMap.addMarker(new MarkerOptions().position(l)
-                    .title(res[x].split("%")[2]));
-            ++x;
-        }
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myposition, 100));
+//        ArrayList<LatLng> pla = new ArrayList<LatLng>();
+//        for(int i=0;i<res.length;++i){
+//            pla.add(new LatLng(Double.parseDouble(res[i].split("%")[0]), Double.parseDouble(res[i].split("%")[1])));
+//        }
+////        pla.add(new LatLng(-33.852, 151.211));
+////        pla.add(new LatLng(-32.765, 150.111));
+//            int x = 0;
+//        for(LatLng l:pla) {
+//            googleMap.addMarker(new MarkerOptions().position(l)
+//                    .title(res[x].split("%")[2]));
+//            ++x;
+//        }
+//            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myposition, 100));
 
     }
 
@@ -346,12 +348,32 @@ public class MapsMarkerActivity extends AppCompatActivity
         }
 
         @Override
-        public void onPostExecute(String[] result){
+        public void onPostExecute(final String[] result){
             if(result!=null){
-                for(int i=0;i<result.length;++i){
-                    res[i] = result[i];
-                }
+//                for(int i=0;i<result.length;++i){
+//                    res[i] = result[i];
+//                }
             }
+            MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    ArrayList<LatLng> pla = new ArrayList<LatLng>();
+                    for(int i=0;i<result.length;++i){
+                        pla.add(new LatLng(Double.parseDouble(res[i].split("%")[0]), Double.parseDouble(res[i].split("%")[1])));
+                    }
+//        pla.add(new LatLng(-33.852, 151.211));
+//        pla.add(new LatLng(-32.765, 150.111));
+                    int x = 0;
+                    for(LatLng l:pla) {
+                        googleMap.addMarker(new MarkerOptions().position(l)
+                                .title(res[x].split("%")[2]));
+                        ++x;
+                    }
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myposition, 100));
+
+                }
+            });
         }
     }
 }
