@@ -1,9 +1,11 @@
 package com.example.mapwithmarker;
 
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -150,6 +152,8 @@ public class MapsMarkerActivity extends AppCompatActivity
     @Override
     @SuppressWarnings({"MissingPermission"})
     public void onConnected(Bundle bundle) {
+
+            if(ActivityCompat.checkSelfPermission(MapsMarkerActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsMarkerActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
                 if (location == null) {
@@ -162,7 +166,7 @@ public class MapsMarkerActivity extends AppCompatActivity
                     myposition = new LatLng(currentLatitude, currentLongitude);
                     Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
                 }
-
+            }
     }
 
 
