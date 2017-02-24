@@ -38,14 +38,12 @@ import java.util.ArrayList;
  * An activity that displays a Google map with a marker (pin) to indicate a particular location.
  */
 public class MapsMarkerActivity extends AppCompatActivity
-        implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
+        implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener{
 
 
     String[] resultstr;
-    String[] res = new String[100];
     LatLng myposition;
 
 
@@ -223,26 +221,26 @@ public class MapsMarkerActivity extends AppCompatActivity
      * Play services inside the SupportMapFragment. The API invokes this method after the user has
      * installed Google Play services and returned to the app.
      */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
-        //LatLng sydney = new LatLng(-33.852, 151.211);
-//        ArrayList<LatLng> pla = new ArrayList<LatLng>();
-//        for(int i=0;i<res.length;++i){
-//            pla.add(new LatLng(Double.parseDouble(res[i].split("%")[0]), Double.parseDouble(res[i].split("%")[1])));
-//        }
-////        pla.add(new LatLng(-33.852, 151.211));
-////        pla.add(new LatLng(-32.765, 150.111));
-//            int x = 0;
-//        for(LatLng l:pla) {
-//            googleMap.addMarker(new MarkerOptions().position(l)
-//                    .title(res[x].split("%")[2]));
-//            ++x;
-//        }
-//            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myposition, 100));
-
-    }
+//    @Override
+//    public void onMapReady(GoogleMap googleMap) {
+//        // Add a marker in Sydney, Australia,
+//        // and move the map's camera to the same location.
+//        //LatLng sydney = new LatLng(-33.852, 151.211);
+////        ArrayList<LatLng> pla = new ArrayList<LatLng>();
+////        for(int i=0;i<res.length;++i){
+////            pla.add(new LatLng(Double.parseDouble(res[i].split("%")[0]), Double.parseDouble(res[i].split("%")[1])));
+////        }
+//////        pla.add(new LatLng(-33.852, 151.211));
+//////        pla.add(new LatLng(-32.765, 150.111));
+////            int x = 0;
+////        for(LatLng l:pla) {
+////            googleMap.addMarker(new MarkerOptions().position(l)
+////                    .title(res[x].split("%")[2]));
+////            ++x;
+////        }
+////            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myposition, 100));
+//
+//    }
 
 
     public class FetchPlacesTask extends AsyncTask<String,Void,String[]>{
@@ -353,30 +351,28 @@ public class MapsMarkerActivity extends AppCompatActivity
         @Override
         public void onPostExecute(final String[] result){
             if(result!=null){
-//                for(int i=0;i<result.length;++i){
-//                    res[i] = result[i];
-//                }
-            }
-            MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    ArrayList<LatLng> pla = new ArrayList<LatLng>();
-                    for(int i=0;i<result.length;++i){
-                        pla.add(new LatLng(Double.parseDouble(res[i].split("%")[0]), Double.parseDouble(res[i].split("%")[1])));
-                    }
+
+                MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        ArrayList<LatLng> pla = new ArrayList<LatLng>();
+                        for (int i = 0; i < result.length; ++i) {
+                            pla.add(new LatLng(Double.parseDouble(result[i].split("%")[0]), Double.parseDouble(result[i].split("%")[1])));
+                        }
 //        pla.add(new LatLng(-33.852, 151.211));
 //        pla.add(new LatLng(-32.765, 150.111));
-                    int x = 0;
-                    for(LatLng l:pla) {
-                        googleMap.addMarker(new MarkerOptions().position(l)
-                                .title(res[x].split("%")[2]));
-                        ++x;
-                    }
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myposition, 100));
+                        int x = 0;
+                        for (LatLng l : pla) {
+                            googleMap.addMarker(new MarkerOptions().position(l)
+                                    .title(result[x].split("%")[2]));
+                            ++x;
+                        }
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myposition, 100));
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 }
