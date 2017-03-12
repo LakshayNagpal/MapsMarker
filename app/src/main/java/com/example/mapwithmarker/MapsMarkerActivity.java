@@ -30,6 +30,7 @@ public class MapsMarkerActivity extends AppCompatActivity implements OnMapReadyC
     private LocationRequest mLocationRequest;
     private Location mLocation;
     private double lat,lon;
+    private double currentlat, currentlon;
 
 
     @Override
@@ -39,6 +40,9 @@ public class MapsMarkerActivity extends AppCompatActivity implements OnMapReadyC
 
         lat=0.0;
         lon=0.0;
+        currentlat = lat;
+        currentlon = lon;
+
         //Asking for runtime permissions in case android version is above marshmallow
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -67,9 +71,6 @@ public class MapsMarkerActivity extends AppCompatActivity implements OnMapReadyC
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
-
-        mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).title("My location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 100));
     }
 
     @Override
@@ -79,7 +80,15 @@ public class MapsMarkerActivity extends AppCompatActivity implements OnMapReadyC
 
         lat = mLocation.getLatitude();
         lon = mLocation.getLongitude();
-        Toast.makeText(this, "Current location is " + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_LONG).show();
+
+        if(currentlat!=lat && currentlon!=lon) {
+
+            currentlat = lat;
+            currentlon = lon;
+            mMap.addMarker(new MarkerOptions().position(new LatLng(currentlat, currentlon)).title("My location"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentlat, currentlon), 100));
+            Toast.makeText(this, "Current Latitude is " + currentlat + "\nCurrent Longitude is " + currentlon, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
